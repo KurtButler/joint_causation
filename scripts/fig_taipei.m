@@ -37,7 +37,12 @@ x = Realestatevaluationdataset(:,2:end-1);
 x = normalize(x);
 y = Realestatevaluationdataset(:,end);
 
+% Names of features
 names = ["Date of Sale", "House Age", "Distance to MRT", "Convenience stores", "Latitude", "Longitude", "House Price"];
+
+% Abbreviated names
+names = ["Date of Sale", "House Age", "Dist. to MRT", "Stores", "Latitude", "Longitude", "House Price"];
+
 
 
 %% GP model
@@ -47,6 +52,10 @@ xtest = x(end-51:end,:);
 ytest = y(end-51:end,:);
 gp = fitrgp(xtrain,ytrain,'KernelFunction','ardsquaredexponential','BasisFunction','constant');
 
+% Training set predictions
+ytrainpred= predict(gp,xtrain);
+% Test predictions
+ytestpred = predict(gp,xtest);
 
 
 %% Let's check the MDCE
@@ -93,41 +102,61 @@ end
 %% Volterra model
 % We'll use a bilinear kernel
 htrain = bilinearfeatures(xtrain);
+htest  = bilinearfeatures(xtest);
 
 [thetaseries,FitInfo] = lasso(htrain,ytrain);
 [~,idbest] = min(FitInfo.MSE);
 theta = thetaseries(:,idbest);
 
-% Model predictions
-ypredvolt = htrain*theta;
+theta = htrain\ytrain;
+
+% Training set predictions
+ytrainvolt = htrain*theta;
+% Test predictions
+ytestvolt = htest*theta;
+
+
+
 
 % Hessian matrix
 BVolt = zeros(Dx);
 for d = 1:Dx
     BVolt(1:d,d) = theta( 1 + Dx + (1:d) + d*(d-1)/2); 
 end
-HessVolt = BVolt + BVolt';
+BVolt = 0.5*(BVolt + BVolt');
+HessVolt = 2*BVolt;
+
 
 
 %% Compute the insample error
-nMSE = var( ytrain - predict(gp,xtrain))/var(ytrain);
-nMSEvolt = var( ytrain - ypredvolt)/var(ytrain);
+TrainMSE     = var( ytrain - ytrainpred);
+TrainMSEvolt = var( ytrain - ytrainvolt);
 
+TestMSE     = var( ytest - ytestpred);
+TestMSEvolt = var( ytest - ytestvolt);
+
+% Text output
+fprintf('Prediction Errors\n \tGPR \tVolt\n')
+fprintf('Train: \t%0.2f \t%0.2f\n',TrainMSE,TrainMSEvolt)
+fprintf('Test:  \t%0.2f \t%0.2f\n', TestMSE,TestMSEvolt)
 
 %% Plot
 figure(19)
 % imagesc(HessPred)
 
-tiledlayout(3,1,'Padding','tight','TileSpacing','tight')
+tiledlayout(2,2,'Padding','tight','TileSpacing','tight')
 
 % Tile 1
 nexttile
-plot(ytest,predict(gp,xtest),'r+',[12;80],[12;80],'k-')
-title('Prediction of housing price','FontSize',15)
+plot(ytest,ytestpred,'ro',ytest,ytestvolt,'b+',[12;80],[12;80],'k-')
+title('','(A) Out-of-sample prediction of housing price','FontSize',15)
 % axis equal
 grid on; grid minor;
 xlabel('True y')
 ylabel('Predicted y')
+legend(sprintf('GPR (test MSE=%0.2f)',TestMSE),...
+    sprintf('Volterra (test MSE=%0.2f)',TestMSEvolt),...
+    'Location','best','FontSize',10)
 
 % Tile 2
 nexttile
@@ -138,28 +167,43 @@ redblue = max([uu,flipud([uu,uu])],0);
 colormap(redblue)
 colorbar
 
+xticks(1:6)
+yticks(1:6)
 xticklabels(names)
 yticklabels(names)
-title('Average MDCE estimates from GPR',sprintf('normalized MSE=%0.3f',nMSE),'FontSize',15)
-
+title('','(B) Average MDCE estimates from GPR','FontSize',15)
 
 % Tile 3
 nexttile
-imagesc(HessVolt)
+imagesc(BVolt)
 clim(max(abs(clim)).*[-1 1])
 uu = (1/256)*linspace(-250,256,500)';
 redblue = max([uu,flipud([uu,uu])],0);
 colormap(redblue)
 colorbar
 
+xticks(1:6)
+yticks(1:6)
 xticklabels(names)
 yticklabels(names)
-title('Average MDCE estimates from Volterra',sprintf('normalized MSE=%0.3f',nMSEvolt),'FontSize',15)
+title('', '(D) Volterra model coefficients','FontSize',15)
 
 
 
 %% Save the figure
-set(gcf,'Position',[52 101 404 964])
+set(gcf,'Position',[52 101 622 526])
 saveas(gcf,'./results/taipei.png')
 saveas(gcf,'./results/taipei.svg')
 
+
+%% Optional: Plot the training set predictions
+% figure(20)
+% plot(ytrain,ytrainpred,'ro',ytrain,ytrainvolt,'b+',[12;80],[12;80],'k-')
+% title('Training set predictions of housing price','FontSize',15)
+% % axis equal
+% grid on; grid minor;
+% xlabel('True y')
+% ylabel('Predicted y')
+% legend(sprintf('GPR (train MSE=%0.2f)',TrainMSE),...
+%     sprintf('Volterra (train MSE=%0.2f)',TrainMSEvolt),...
+%     'Location','best')
