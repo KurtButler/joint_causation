@@ -1,2 +1,5 @@
 # Ignore Matlab autosave files
 *.asv
+
+# Ignore scrapped files
+./scraps/*
