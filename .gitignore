@@ -6,3 +6,6 @@
 
 # Ignore .svg files 
 *.svg
+
+# Ignore miscellaneous
+*.DS_Store
