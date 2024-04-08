@@ -144,7 +144,7 @@ fprintf('Test:  \t%0.2f \t%0.2f\n', TestMSE,TestMSEvolt)
 figure(19)
 % imagesc(HessPred)
 
-tiledlayout(2,2,'Padding','tight','TileSpacing','tight')
+tiledlayout(1,2,'Padding','tight','TileSpacing','tight')
 
 % Tile 1
 nexttile
@@ -173,25 +173,25 @@ xticklabels(names)
 yticklabels(names)
 title('','(B) Average MDCE estimates from GPR','FontSize',15)
 
-% Tile 3
-nexttile
-imagesc(BVolt)
-clim(max(abs(clim)).*[-1 1])
-uu = (1/256)*linspace(-250,256,500)';
-redblue = max([uu,flipud([uu,uu])],0);
-colormap(redblue)
-colorbar
-
-xticks(1:6)
-yticks(1:6)
-xticklabels(names)
-yticklabels(names)
-title('', '(D) Volterra model coefficients','FontSize',15)
+% % Tile 3
+% nexttile
+% imagesc(BVolt)
+% clim(max(abs(clim)).*[-1 1])
+% uu = (1/256)*linspace(-250,256,500)';
+% redblue = max([uu,flipud([uu,uu])],0);
+% colormap(redblue)
+% colorbar
+% 
+% xticks(1:6)
+% yticks(1:6)
+% xticklabels(names)
+% yticklabels(names)
+% title('', '(C) Volterra model coefficients','FontSize',15)
 
 
 
 %% Save the figure
-set(gcf,'Position',[52 101 622 526])
+set(gcf,'Position',[52 102 622 299])
 saveas(gcf,'./results/taipei.png')
 saveas(gcf,'./results/taipei.svg')
 
