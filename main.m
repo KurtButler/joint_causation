@@ -40,6 +40,7 @@ fig_local_int_fcn
 
 % Fig 5
 % Robustness of the MDCE to linear confounders
+Fig5_confounder
 
 % Fig 6
 % Comparison of exact GPR with sparse approximation
