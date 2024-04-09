@@ -44,6 +44,7 @@ Fig5_confounder
 
 % Fig 6
 % Comparison of exact GPR with sparse approximation
+Fig6_sparse
 
 % Fig 7
 % Real data example using New Taipei City data
