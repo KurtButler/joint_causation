@@ -127,8 +127,7 @@ ylabel('x_2')
 
 %% Save the plots
 set(gcf,'Position',[10 97 521 683]);
-saveas(gcf,'./Results/sparsity.png')
-saveas(gcf,'./Results/sparsity.svg')
+saveas(gcf,'./results/sparsity.png')
 
 %% Functions
 

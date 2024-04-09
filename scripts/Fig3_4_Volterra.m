@@ -213,11 +213,9 @@ redblue = max([uu,flipud([uu,uu])],0);
 colormap(redblue)
 
 
-gcf;
-ans.Position = [95 285 514 441];
-
+%% Save output
+set(gcf,'Position',[95 285 514 441]);
 saveas(gcf,'./results/hessian.png')
-saveas(gcf,'./results/hessian.svg')
 
 
 %% Functions

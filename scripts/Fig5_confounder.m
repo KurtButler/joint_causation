@@ -143,5 +143,5 @@ ylabel('MDCE estimation error')
 
 %% Export
 set(gcf,'Position',[56 261 560 177]);
-% saveas(gcf,'./results/confounder.png')
+saveas(gcf,'./results/confounder.png')
 
