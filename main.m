@@ -20,7 +20,6 @@ warning('off','all')
 
 %% Experiments
 % Running these scripts will reproduce figures from the paper
-rng(0)
 
 % Table 1
 table_kernels

@@ -2,37 +2,21 @@
 % This script should produce a figure that compares the MDCE estimates for
 % each of the kernels for the 
 
+%% Fix the random seed
+rng(0)
+
 
 disp(' <> <> <> <> Egg Box <> <> <> <>')
 
 func1 = @(x) 0.5*cos(3*x(:,1))+0.5*cos(3*x(:,2));
 func2 = @(x) cos(3*x(:,1)).*cos(2*x(:,2));
-% func2 = @(x) 0.5*cos(3*x(:,1)+3*x(:,2))+0.5*cos(3*x(:,2)-3*x(:,1));
-func3 = @(x) sin(2*x(:,1)).*sin(4*x(:,2));% + cos(2*x(:,1))+cos(2*x(:,2));
 
-
-
-% Test Case 1: Egg box
-% func3 = @(x) sin(x(:,1)) + sin(x(:,2));
-
-% Test Case 2: Modified egg box
-% func3 = @(x) sin(2*x(:,1)).*sin(2*x(:,2));
-
-% Test Case 3: Region-specific interactions
 sigmoid = @(x) 1./(1+exp(-5*x));
 func3 = @(x) cos(2*x(:,1)).*cos(3*x(:,2)).*sigmoid(x(:,1)) + sin(x(:,2));
-
-% func3 = @(x) cos(2*x(:,1)).*cos(2*x(:,2));
-% func3 = @(x) x(:,1).*x(:,2);
-
-% Test Case 4: 
-% func3 = @(x) sin(2*x(:,1)).*sin(2*x(:,2)) + 4*x(:,1).*x(:,2);
-
 
 SNR = 5;
 
 ddfunc3 = @(x) 1e8*(func3(x-[1e-4 1e-4]) - func3(x-[0 1e-4])-func3(x-[1e-4 0]) + func3(x));
-
 
 [demox1,demox2] = meshgrid(linspace(-2,2,50));
 demoy1 = zeros(size(demox1));
@@ -80,111 +64,6 @@ yp3 = predict(gp3,xp);
 yp4 = predict(gp4,xp);
 yp5 = predict(gp5,xp);
 
-%% Plot results
-% figure(2)
-% tiledlayout(2,2,'TileSpacing','compact','Padding','tight')
-% 
-% nexttile
-% surf(demox1,demox2,demoy3,'FaceAlpha',0.95,'EdgeAlpha',0.0)
-% colormap(gray)
-% hold on;
-% plot3(x(:,1),x(:,2),y,'k*',xp(:,1),xp(:,2),yp1,'o',xp(:,1),xp(:,2),yp2,'x',xp(:,1),xp(:,2),yp3,'+');
-% hold off;
-% legend('','Observed','SE','ARD-SE','Additive','FontSize',15)
-% 
-% nexttile
-% plot(yp0,yp1,'o',yp0,yp2,'x',yp0,yp3,'+',[-2;2],[-2;2],'k--'); 
-% xlabel('Function true value'); 
-% ylabel('GP estimate');
-% title('Predictions of FUNCTION vs true values','FontSize',15)
-% legend('SE','ARD-SE','Additive','FontSize',15)
-% 
-% nexttile
-% err1 = (yp0 - yp1).^2;
-% err2 = (yp0 - yp2).^2;
-% err3 = (yp0 - yp3).^2;
-% histogram(err1);
-% hold on;
-% histogram(err2);
-% histogram(err3);
-% hold off;
-% title('Histograms of error','FontSize',15)
-% legend('SE','ARD-SE','Additive','FontSize',15)
-% 
-% % Text output
-% fprintf('= = = MSE of function = = = \n')
-% fprintf('  SE\tARD-SE\tAdd.\n')
-% fprintf('  %0.3f\t%0.3f\t%0.3f\n',mean(err1),mean(err2),mean(err3))
-
-
-%% Plot derivatives
-% figure(3)
-% tiledlayout(1,1,'TileSpacing','compact','Padding','tight')
-% 
-% MDCE1 = getderivative(gp1,xp,x);
-% MDCE2 = getderivative(gp2,xp,x);
-% MDCE3 = getderivative(gp3,xp,x);
-% 
-% surface = zeros(size(demox1));
-% surface(:) = ddfunc3([demox1(:),demox2(:)]);
-% 
-% nexttile
-% surf(demox1,demox2,surface,'FaceAlpha',0.95,'EdgeAlpha',0.0)
-% colormap(gray)
-% % hold on;
-% % plot3(x(:,1),x(:,2),ddfunc3(x),'k*',xp(:,1),xp(:,2),MDCE1,'o',xp(:,1),xp(:,2),MDCE2,'x',xp(:,1),xp(:,2),MDCE3,'+');
-% % hold off;
-% % legend('','Observed','SE','ARD-SE','Additive','FontSize',15)
-% title('MDCE','FontSize',15)
-% 
-% 
-
-%% Plot function
-POINTSIZE = 10;
-
-figure(1)
-tiledlayout(1,2,'TileSpacing','compact','Padding','tight')
-
-% nexttile
-% surf(demox1,demox2,demoy1)
-% title('Eggbox','FontSize',15)
-% 
-% nexttile
-% surf(demox1,demox2,demoy2)
-% title('Modified Eggbox','FontSize',15)
-
-nexttile
-surf(demox1,demox2,demoy3,'EdgeColor','black','EdgeAlpha',0.2)
-hold on;
-scatter3(x(:,1),x(:,2), y,POINTSIZE,'black','filled')
-for n = 1:size(x,1)
-    plot3(x(n,1)*[1;1],x(n,2)*[1;1], [func3([x(n,:)]);y(n)],'k');
-end
-hold off;
-title('Local interaction function, F','FontSize',15)
-colorbar
-xlabel('x_1')
-ylabel('x_2')
-zlabel('y')
-
-nexttile
-ddemoy = demoy3;
-ddemoy(:) = ddfunc3([demox1(:), demox2(:)]);
-surf(demox1,demox2,ddemoy,'EdgeColor','black','EdgeAlpha',0.2)
-title('Mixed-derivative, \partial_1\partial_2F','FontSize',15)
-colorbar
-xlabel('x_1')
-ylabel('x_2')
-zlabel('\partial_1\partial_2y')
-
-% uu = (1/256)*linspace(-150,256,500)';
-% redblue = max([uu,flipud([uu,uu])],0);
-% colormap(redblue)
-
-% saveas(gcf,'./Results/local_function.png')
-% saveas(gcf,'./Results/local_function.svg')
-
-
 
 %% Compute MDCE
 MDCE0 = zeros(size(demox1));
@@ -203,64 +82,6 @@ MDCE5(:) = perderivative(gp5,[demox1(:),demox2(:)],x);
 
 
 gpnumdiff = @(gp,x) 1e8*(predict(gp,x-[1e-4 1e-4]) - predict(gp,x-[0 1e-4])-predict(gp,x-[1e-4 0]) + predict(gp,x));
-
-
-
-% MDCE4(:) = gpnumdiff(gp4,[demox1(:),demox2(:)]);
-% MDCE5(:) = gpnumdiff(gp5,[demox1(:),demox2(:)]);
-
-
-%% Debugger for Periodic kernel 
-% POINTSIZE = 10;
-% 
-% MDCEperanalytic = zeros(size(demox1));
-% MDCEpernumerical = zeros(size(demox1));
-% MDCEperanalytic(:) = perderivative(gp5,[demox1(:),demox2(:)],x);
-% MDCEpernumerical(:) = gpnumdiff(gp5,[demox1(:),demox2(:)]);
-% 
-% 
-%  
-% figure(24)
-% tiledlayout(2,2,'TileSpacing','compact','Padding','tight')
-% 
-% 
-
-% nexttile
-% surf(demox1,demox2,MDCE0,'EdgeColor','black','EdgeAlpha',0)
-% title('True MDCE',sprintf('SNR=%ddB',SNR),'FontSize',15)
-% hold on;
-% scatter3(x(:,1),x(:,2), max(MDCE0(:))+1 + 0*x(:,1),POINTSIZE,'black','filled')
-% hold off;
-% legend('','Sample point locations','Location','northwest')
-% clim([-1,1]*limiter)
-% view([0 0 1])
-% colorbar
-% 
-% nexttile
-% surf(demox1,demox2,MDCE1,'EdgeColor','black','EdgeAlpha',0)
-% title('SE kernel','FontSize',15)
-% clim([-1,1]*limiter)
-% view([0 0 1])
-% colorbar
-% 
-% 
-% nexttile
-% surf(demox1,demox2,MDCEperanalytic,'EdgeColor','black','EdgeAlpha',0)
-% title('Periodic kernel','(analytic)','FontSize',15)
-% clim([-1,1]*limiter)
-% view([0 0 1])
-% colorbar
-% 
-% 
-% 
-% nexttile
-% surf(demox1,demox2,MDCEpernumerical,'EdgeColor','black','EdgeAlpha',0)
-% title('Periodic kernel','(numerical)','FontSize',15)
-% clim([-1,1]*limiter)
-% view([0 0 1])
-% colorbar
-% 
-% colormap(turbo)
 
 
 
@@ -350,7 +171,8 @@ colorbar
 
 
 %% Save the result
-% saveas(gcf,'./Results/kernel_comparison.png')
+set(gcf,'Position',[115 114 560 687])
+saveas(gcf,'./results/kernel_comparison.png')
 
 
 %% Functions
