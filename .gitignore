@@ -3,6 +3,7 @@
 
 # Ignore scrapped files
 ./scraps/*
+scraps/*
 
 # Ignore .svg files 
 *.svg
