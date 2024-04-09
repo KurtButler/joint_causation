@@ -31,12 +31,13 @@ fig_local_int_fcn
 
 % Fig 2
 % Comparison of kernels
-
+Fig_kernels
 
 % Figs 3 and 4
 %   Figure 3: A sample from the Volterra model
 %   Figure 4: Comparison of the true model, the estimated MDCE from GPR,
 %   the Volterra model estimate, and the Bayes detector
+Fig3_4_Volterra
 
 % Fig 5
 % Robustness of the MDCE to linear confounders
