@@ -23,7 +23,7 @@ warning('off','all')
 rng(0)
 
 % Table 1
-
+table_kernels
 
 % Fig 1
 % Visualization of the local interaction function
