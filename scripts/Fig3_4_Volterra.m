@@ -48,11 +48,9 @@ grid minor;
 legend('y_t','FontSize',12)
 
 
-gcf;
-ans.Position = [60 870 602 197];
 
-saveas(gcf,'./Results/two_signals.png')
-saveas(gcf,'./Results/two_signals.svg')
+set(gcf,'Position',[60 870 602 197])
+saveas(gcf,'./results/two_signals.png')
 
 
 %% Fitting models
@@ -90,9 +88,7 @@ for l = P+1:numel(beta)
     end
 end
 VoltHess = rot90(VoltHess,2);
-figure(13)
-imagesc(VoltHess)
-title('Volterra matrix')
+
 
 
 %% MDCE Analysis
@@ -130,10 +126,12 @@ end
 %% Bayesian hypothesis test 
 omit = @(x,p) x(:,[1:p-1,p+1:size(x,2)]);
 
+fprintf('Running the Bayes detector...\n')
 BayesTest = zeros(9);
 for p = 1:P
+    fprintf('\n');
     for q = 1:p-1
-        fprintf('%d,%d\n',p,q);
+        fprintf('.');
         kfcn = @(Xn,Xm,theta) kSE(omit(Xn,p),omit(Xm,p),theta(1:P)) +kSE(omit(Xn,q),omit(Xm,q),theta(P+1:2*P));
         theta0 = zeros(1,2*P);
         gptemp = fitrgp(xt,yt,'KernelFunction',kfcn,'KernelParameters',theta0);
@@ -163,7 +161,7 @@ tiledlayout(2,2,"TileSpacing","compact", 'Padding','tight')
 
 nexttile
 imagesc(Hess)
-title('True Hessian Matrix','FontSize',15)
+title('','True Hessian Matrix','FontSize',15)
 colorbar;
 clim([-1,1])
 o = (0:2:255)'; o =[0*o;o]; colors = (1/256)*[o,0*o, flipud(o)];
@@ -176,7 +174,7 @@ yticklabels(colnames)
 
 nexttile
 imagesc(Best)
-title('Average MDCE','FontSize',15)
+title('','Average MDCE','FontSize',15)
 colorbar;
 clim([-1,1])
 xticks(1:9)
@@ -187,7 +185,7 @@ yticklabels(colnames)
 
 nexttile
 imagesc(VoltHess)
-title('Volterra model','FontSize',15)
+title('','Volterra model','FontSize',15)
 colorbar;
 clim([-1,1])
 xticks(1:9)
@@ -199,7 +197,7 @@ yticklabels(colnames)
 
 nexttile
 imagesc(BayesTest)
-title('Bayes detector','FontSize',15)
+title('','Bayes detector','FontSize',15)
 colorbar;
 clim([-1,1])
 xticks(1:9)
