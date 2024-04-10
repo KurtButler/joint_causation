@@ -24,15 +24,6 @@ for fcase = 1:3
         ddfunc3 = @(x) 1e8*(func3(x-[1e-4 1e-4]) - func3(x-[0 1e-4])-func3(x-[1e-4 0]) + func3(x));
 
 
-        [demox1,demox2] = meshgrid(linspace(-2,2,50));
-        demoy1 = zeros(size(demox1));
-        demoy2 = zeros(size(demox1));
-        demoy3 = zeros(size(demox1));
-        demoy1(:) = func1([demox1(:), demox2(:)]);
-        demoy2(:) = func2([demox1(:), demox2(:)]);
-        demoy3(:) = func3([demox1(:), demox2(:)]);
-
-
         %% Data generative process
         N = 300;
         x = 4*rand(N,2) - 2;
