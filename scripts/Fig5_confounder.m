@@ -23,7 +23,7 @@ outputTensor = zeros(numel(slist), NoTrials,2);
 for iter = 1:numel(slist)
     zsigma = slist(iter);
 for testcase = 1:2
-    fprintf('Iter %d, Case %d/2\n',iter,testcase)
+    fprintf('Iter %d/%d, Case %d/2\n',iter,numel(slist),testcase)
     for trial = 1:NoTrials
         %% Define our functions
         % x := g(z) + w_x
