@@ -79,7 +79,7 @@ ylabel('x_2')
 
 
 % GPR MDCE
-py(:) = getderivative(gp,[px1(:),px2(:)],x(1:SUBSAMPLE,:));
+py(:) = getSecondDerivative(gp,[px1(:),px2(:)],x(1:SUBSAMPLE,:));
 MSE = mean((py0(:) - py(:)).^2);
 nexttile
 surf(px1,px2,py,'EdgeColor','none')
@@ -132,7 +132,11 @@ saveas(gcf,'./results/sparsity.png')
 %% Functions
 
 
-function d2Fdxdz = getderivative(gp,xp,x)
+function d2Fdxdz = getSecondDerivative(gp,xp,x)
+    % Computes the mixed derivative for a GP with two dimensional input
+    if size(x,2) ~= 2
+        error('Dimension of x must be two.')
+    end
     alpha = gp.Alpha;
     if strcmp(gp.KernelInformation.Name,'SquaredExponential')
         l = gp.KernelInformation.KernelParameters(1);
