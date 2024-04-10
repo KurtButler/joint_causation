@@ -97,13 +97,14 @@ Best = zeros(T+1);
 Hess = zeros(T+1);
 
 for i1=1:T+1
+    fprintf('\n)')
     for i2=1:T+1
         alpha = gp.Alpha;
         l = gp.KernelInformation.KernelParameters(1:end-1);
         sf= gp.KernelInformation.KernelParameters(end);
         sg= gp.Sigma;
 
-        [i1,i2]
+        fprintf('%d,%d\t',i1,i2)
 
 
         dx1 = (xt(:,i1)-xt(:,i1)')/(-l(i1)^2);
@@ -122,11 +123,12 @@ for i1=1:T+1
         Hess(i1,i2) = B(i1,i2) + B(i2,i1);
     end
 end
+fprintf('\n')
 
 %% Bayesian hypothesis test 
 omit = @(x,p) x(:,[1:p-1,p+1:size(x,2)]);
 
-fprintf('Running the Bayes detector...\n')
+fprintf('Running the Bayes detector for figure 4...\n')
 BayesTest = zeros(9);
 for p = 1:P
     fprintf('\n');
@@ -142,6 +144,7 @@ for p = 1:P
         end
     end
 end
+    fprintf('\n');
 
 
 BayesTest = rot90(BayesTest,2);
@@ -216,39 +219,7 @@ set(gcf,'Position',[95 285 514 441]);
 saveas(gcf,'./results/hessian.png')
 
 
-%% Functions
-function [Mx] = embed(x,Q,tau)
-% EMBED(x,Q,tau)
-% Computes the Q-dimensional delay embedding of the signal x(t)
-% with embedding delay tau.
-% If x is an Nx1 column vector, then the result will be an
-% (N - (Q-1)*tau)xQ matrix whose rows are points in the shadow manifold 
-L = size(x,1) - (Q-1)*tau;
-if size(x,2)>1
-    if all(imag(x(:))==0)
-        Mx = zeros(L, size(x,2)*Q);
-        for k=1:size(x,2)
-            Mx(:,(k-1)*Q +(1:Q)) = embed(x(:,k),Q,tau);
-        end
-    else
-        Mx = [];
-        for k=1:size(x,2)
-            M = embed(x(:,k),Q,tau);
-            Mx = [Mx, M];
-        end
-    end
-else
-    if all(imag(x(:))==0)
-        Mx = zeros(L,0);
-        for q = 1:Q
-            Mx = cat(2,  Mx,  x((1:L)+(q-1)*tau,:)  );
-        end
-    else
-        Mx = embed([real(x),imag(x)],Q,tau);
-    end
-end
-end
-
+%% Local Functions
 function y = lastcol(Y)
     y = Y(:,end);
 end
