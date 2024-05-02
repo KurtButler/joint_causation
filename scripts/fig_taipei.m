@@ -177,37 +177,7 @@ xticklabels(names)
 yticklabels(names)
 title('','(B) Average MDCE estimates from GPR','FontSize',15)
 
-% % Tile 3
-% nexttile
-% imagesc(BVolt)
-% clim(max(abs(clim)).*[-1 1])
-% uu = (1/256)*linspace(-250,256,500)';
-% redblue = max([uu,flipud([uu,uu])],0);
-% colormap(redblue)
-% colorbar
-% 
-% xticks(1:6)
-% yticks(1:6)
-% xticklabels(names)
-% yticklabels(names)
-% title('', '(C) Volterra model coefficients','FontSize',15)
-
-
 
 %% Save the figure
 set(gcf,'Position',[52 102 622 299])
 saveas(gcf,'./results/taipei.png')
-saveas(gcf,'./results/taipei.svg')
-
-
-%% Optional: Plot the training set predictions
-% figure(20)
-% plot(ytrain,ytrainpred,'ro',ytrain,ytrainvolt,'b+',[12;80],[12;80],'k-')
-% title('Training set predictions of housing price','FontSize',15)
-% % axis equal
-% grid on; grid minor;
-% xlabel('True y')
-% ylabel('Predicted y')
-% legend(sprintf('GPR (train MSE=%0.2f)',TrainMSE),...
-%     sprintf('Volterra (train MSE=%0.2f)',TrainMSEvolt),...
-%     'Location','best')

@@ -15,8 +15,7 @@ addpath('./scripts')
 diary './results/output.log'
 
 % Optional: Turn off warnings (that might clutter the log file)
-warning('off','all')
-
+% warning('off','all')
 
 %% Experiments
 % Running these scripts will reproduce figures from the paper

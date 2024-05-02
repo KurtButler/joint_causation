@@ -188,8 +188,7 @@ l1 = exp(theta(2));
 l2 = exp(theta(3));
 f1 = theta(4);
 f2 = theta(5);
-% I will now exploit the product factorization to make this analysis less
-% awful.
+% I will now exploit the product factorization to make this analysis easier
 distmat1 = (xp(:,1)-x(:,1)');  % DIFFERENCES in coordinate 1
 distmat2 = (xp(:,2)-x(:,2)');  % DIFFERENCES in coordinate 2
 K1 = exp(-(sin(f1*distmat1)/l1).^2);
