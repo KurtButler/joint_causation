@@ -22,7 +22,7 @@ opts.VariableNames = ["No", "X1TransactionDate", "X2HouseAge", "X3DistanceToTheN
 opts.VariableTypes = ["double", "double", "double", "double", "double", "double", "double", "double"];
 
 % Import the data
-Realestatevaluationdataset = readtable("/Users/kbutler/Documents/MATLAB/Joint Causation/for publication/data/real+estate+valuation+data+set/Real estate valuation data set.xlsx", opts, "UseExcel", false);
+Realestatevaluationdataset = readtable("./data/real+estate+valuation+data+set/Real estate valuation data set.xlsx", opts, "UseExcel", false);
 
 % Convert to output type
 Realestatevaluationdataset = table2array(Realestatevaluationdataset);
