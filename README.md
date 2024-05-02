@@ -23,6 +23,7 @@ If you use any code or results from this project in your academic work, please c
   author={Butler, Kurt and Feng, Guanchao and Djuri{\'c}, Petar M},
   journal={IEEE Transactions on Signal Processing},
   year={2024},
-  publisher={IEEE}
+  publisher={IEEE},
+  doi={10.1109/TSP.2024.3394660}
 }
 ```
