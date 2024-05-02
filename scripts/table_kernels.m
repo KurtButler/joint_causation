@@ -55,6 +55,7 @@ for fcase = 1:3
 
 
         %% Compute MDCE
+        [demox1,demox2] = meshgrid(linspace(-2,2,50));
         MDCE0 = zeros(size(demox1));
         MDCE1 = zeros(size(demox1));
         MDCE2 = zeros(size(demox1));
